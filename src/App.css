@@ -1,3 +1,36 @@
-.grid-item {
-  background-color: blue;
+body {
+  background: url("./background/background.jpeg") no-repeat;
+  background-size: cover;
 }
+
+.card {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid black;
+  height: 200px;
+  width: 200px;
+  border-radius: 1em;
+  margin: .5em;
+  overflow: hidden;
+  transition: 2s ease-in-out all;
+  }
+
+.game-grid {
+  font-size: 1rem;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+  
+  .card-img {
+    height: 200px;
+    width: 200px;
+  }
+
+  @media only screen and (max-width: 600px) {
+    .card {
+      height: 100px;
+      width: 200px;
+    }
+  }
