@@ -16,6 +16,7 @@ function App() {
   );
   const [cardsFlipped, setCardsFlipped] = useState([]);
   const [cardsCorrect, setCardsCorrect] = useState([]);
+  const [playerTurn, setPlayerTurn] = useState(true);
   const [turn, setTurn] = useState(1);
   const timeout = useRef(null);
 
@@ -30,6 +31,28 @@ function App() {
     }
   };
 
+
+  //setting the turn between enemy and player
+  const changeTurn = () => {
+    setTimeout(() => {
+      setTurn(turn + 1);
+      turn % 2 === 0 ? setPlayerTurn(true) : setPlayerTurn(false); 
+    }, 500);
+    if(playerTurn) { //currently working with playerTurn set to positive. need to figure out why
+      setTimeout(enemyTurn , 1000);
+    }
+  }
+
+  const enemyTurn = () => {
+    setTimeout(() => {
+      setCardsFlipped((prev) => [...prev, Math.floor(Math.random() * (cards.length - 0) + 0)]);//using delay on setting cards flipped for a delayed flip
+    },500);
+    setTimeout(() => {
+      setCardsFlipped((prev) => [...prev, Math.floor(Math.random() * (cards.length - 0) + 0)]);
+    },1500);
+  }
+
+
   //everytime 2 cards are flipped they are evaluated
   const evaluate = () => {
     const [first, second] = cardsFlipped; //using the destructured array as a way of searching cards array
@@ -40,7 +63,7 @@ function App() {
       setCardsFlipped([]);
     }, 500);
     checkCompletion();
-    setTurn(turn + 1);
+    changeTurn();
   };
 
   //checking completion everytime a pair is evaluated
@@ -61,6 +84,7 @@ function App() {
       <CombatLog cardsCorrect={cardsCorrect} cards={cards}/>
       <div className="card-grid">
         <SingleCard
+          playerTurn={playerTurn}
           handleCardClick={handleCardClick}
           cardsFlipped={cardsFlipped}
           cardsCorrect={cardsCorrect}
@@ -68,6 +92,7 @@ function App() {
         />
       </div>
       <Moves turn={turn}/>
+      <div className="current-turn">{playerTurn === true ? <span>Player Turn</span> : <span>Enemy Turn</span>}</div>
     </div>
   );
 }
