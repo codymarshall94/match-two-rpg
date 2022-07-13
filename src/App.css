@@ -43,6 +43,11 @@ body {
   perspective: 1000px; /* Remove this if you don't want the 3D effect */
 }
 
+/* set pointer events to none and add the class when its enemy turn */
+.disabled-card {
+  pointer-events: none;
+}
+
 /* This container is needed to position the front and back side */
 .flip-card-inner {
   position: relative;
@@ -151,6 +156,15 @@ body {
   font-size: 3em;
 }
 
+
+.current-turn {
+  position: absolute;
+  left: 50%;
+  bottom: 20%;
+  transform: translateX(-50%);
+  color: black;
+  font-size: 3rem;
+}
 
 @media only screen and (max-width: 768px) {
   /* For mobile phones: */
