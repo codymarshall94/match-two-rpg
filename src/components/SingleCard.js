@@ -44,12 +44,13 @@ function SingleCard({
   cards,
   cardsFlipped,
   cardsCorrect,
+  playerTurn,
   index,
 }) {
   return (
     <>
       {cards.map((card, index) => (
-        <div key={index} onClick={() => handleCardClick(index)}>
+        <div className={!playerTurn || cardsFlipped.length === 2 ? "disabled-card" : ""} key={index} onClick={() => handleCardClick(index)}>
           <RenderCard
             card={card}
             cardsFlipped={cardsFlipped}
