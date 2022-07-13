@@ -69,14 +69,19 @@ function App() {
   //checking completion everytime a pair is evaluated
   const checkCompletion = () => {
     if (cards.length === cardsCorrect.length) {
-      console.log("you win");
+      resetCards();
     }
   };
+
+  const resetCards = () => {
+    setCards(null);
+  }
 
   useEffect(() => {
     if (cardsFlipped.length === 2) {
       setTimeout(evaluate, 500);
     }
+  // eslint-disable-next-line
   }, [cardsFlipped]);
 
   return (
