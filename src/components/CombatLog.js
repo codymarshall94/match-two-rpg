@@ -1,9 +1,12 @@
 import React from 'react'
 
-function CombatLog({cardsCorrect}) {
+function CombatLog({cardsCorrect, cards}) {
+let currentEffect = cardsCorrect[cardsCorrect.length - 1];
+console.log(currentEffect);
+
   return (
     <div className='log-box'>
-        {cardsCorrect.length - 1 !== null ? <span>{cardsCorrect[cardsCorrect.length -1].effect}</span> : null}
+        {cardsCorrect && currentEffect ? <span className='combat-text'>{cards[currentEffect].effect.charAt(0).toUpperCase() + cards[currentEffect].effect.slice(1)}</span> : null}
     </div>
   )
 }
