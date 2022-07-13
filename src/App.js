@@ -53,14 +53,14 @@ function App() {
   }, [cardsFlipped]);
 
   return (
-    <div className="container">
-      <div className="container game-grid">
-        <SingleCard
-          handleCardClick={handleCardClick}
-          cardsFlipped={cardsFlipped}
-          cardsCorrect={cardsCorrect}
-          cards={cards}
-        />
+    <div className="app-container">
+      <div className="card-grid">
+          <SingleCard
+            handleCardClick={handleCardClick}
+            cardsFlipped={cardsFlipped}
+            cardsCorrect={cardsCorrect}
+            cards={cards}
+          />
       </div>
     </div>
   );
