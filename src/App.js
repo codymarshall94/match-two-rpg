@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useRef } from "react";
 import "./App.css";
 import { CARDS } from "./cards";
+import CombatLog from "./components/CombatLog";
+import Moves from "./components/Moves";
 import SingleCard from "./components/SingleCard";
 
 //start game with all cards flipped upside down
@@ -14,6 +16,7 @@ function App() {
   );
   const [cardsFlipped, setCardsFlipped] = useState([]);
   const [cardsCorrect, setCardsCorrect] = useState([]);
+  const [turn, setTurn] = useState(1);
   const timeout = useRef(null);
 
   const handleCardClick = (cardIndex) => {
@@ -37,6 +40,7 @@ function App() {
       setCardsFlipped([]);
     }, 500);
     checkCompletion();
+    setTurn(turn + 1);
   };
 
   //checking completion everytime a pair is evaluated
@@ -54,14 +58,16 @@ function App() {
 
   return (
     <div className="app-container">
+      <CombatLog cardsCorrect={cardsCorrect} cards={cards}/>
       <div className="card-grid">
-          <SingleCard
-            handleCardClick={handleCardClick}
-            cardsFlipped={cardsFlipped}
-            cardsCorrect={cardsCorrect}
-            cards={cards}
-          />
+        <SingleCard
+          handleCardClick={handleCardClick}
+          cardsFlipped={cardsFlipped}
+          cardsCorrect={cardsCorrect}
+          cards={cards}
+        />
       </div>
+      <Moves turn={turn}/>
     </div>
   );
 }
