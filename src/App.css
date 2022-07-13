@@ -1,3 +1,5 @@
+/*==========MAIN STYLES*/
+
 #root {
   height: 100vh;
 }
@@ -8,6 +10,16 @@ body {
   height: 100vh;
 }
 
+.app-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}
+
+
+/* =================CARD GRID */
 
 .card-grid {
   display: grid;
@@ -28,48 +40,6 @@ body {
   perspective: 1000px; /* Remove this if you don't want the 3D effect */
 }
 
-.card-flip {
-  transition: .5s ease-in;
-  transform: rotateY(180deg);
-  transform-style: preserve-3d;
-}
-
-.flip-card-inner {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  transition: transform 0.8s;
-  transform-style: preserve-3d;
-}
-
-/* Position the front and back side */
-.card-front, .card-back {
-  position: absolute;
-
-  -webkit-backface-visibility: hidden; /* Safari */
-  backface-visibility: hidden;
-}
-
-
-
-.app-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-  width: 100%;
-}
-
-
-@media only screen and (max-width: 768px) {
-  /* For mobile phones: */
- .card-grid {
-  grid-template-columns: repeat(5, 4em);
-  grid-template-rows: repeat(5, 4em);
- }
-}
-
-
 /* This container is needed to position the front and back side */
 .flip-card-inner {
   position: relative;
@@ -80,11 +50,12 @@ body {
   transform-style: preserve-3d;
 }
 
-/* Do an horizontal flip when you move the mouse over the flip box container */
+/* Do an horizontal flip when card is clicked and added to array or cards flipped */
 .flip-card .flip-card-inner {
   transform: rotateY(180deg);
 }
 
+/*Image sizing for card */
 .card-img {
   height: 100%;
   width: 100%;
@@ -109,3 +80,15 @@ body {
 .flip-card-back {
   transform: rotateY(180deg);
 }
+
+
+
+@media only screen and (max-width: 768px) {
+  /* For mobile phones: */
+ .card-grid {
+  grid-template-columns: repeat(5, 4em);
+  grid-template-rows: repeat(5, 4em);
+ }
+}
+
+

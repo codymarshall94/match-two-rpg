@@ -5,22 +5,21 @@ const RenderCard = ({ card, cardsFlipped, cardsCorrect, index }) => {
     <div className={
       cardsFlipped.includes(index) || cardsCorrect.includes(index) ? "card-tile" : "flip-card card-tile"
     }>
-      <div class="flip-card-inner">
-      <div class="flip-card-back">
+      <div className="flip-card-inner">
+      <div className="flip-card-back">
           <img
             className="card-img"
             src={require("../card-fronts/card-random.png")}
             alt="card back"
           />
         </div>
-        <div class="flip-card-front">
+        <div className="flip-card-front">
           <img className="card-img" src={card.front} alt="Avatar" />
         </div>
       </div>
     </div>
 
-    //backup plan
-
+    //backup plan below =======
     /*
     <div
       className={
