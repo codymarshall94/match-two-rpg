@@ -2,7 +2,9 @@ import React, { useEffect, useState, useRef } from "react";
 import "./App.css";
 import { CARDS } from "./cards";
 import CombatLog from "./components/CombatLog";
+import EnemyDisplay from "./components/EnemyDisplay";
 import Moves from "./components/Moves";
+import PlayerDisplay from "./components/PlayerDisplay";
 import SingleCard from "./components/SingleCard";
 
 //start game with all cards flipped upside down
@@ -18,7 +20,10 @@ function App() {
   const [cardsCorrect, setCardsCorrect] = useState([]);
   const [playerTurn, setPlayerTurn] = useState(true);
   const [turn, setTurn] = useState(1);
+  const [playerHealth, setPlayerHealth] = useState(10);
+  const [enemyHealth, setEnemyHealth] = useState(10);
   const timeout = useRef(null);
+  let damageTaken;
 
   const handleCardClick = (cardIndex) => {
     // Have a maximum of 2 items in array at once.
@@ -30,7 +35,6 @@ function App() {
       setCardsFlipped([cardIndex]);
     }
   };
-
 
   //setting the turn between enemy and player
   const changeTurn = () => {
@@ -53,11 +57,22 @@ function App() {
   }
 
 
+  const dealDamage = () => {
+    damageTaken = cards[cardsCorrect[cardsCorrect.length -1]].damage;
+    if(playerTurn) {
+      setEnemyHealth(enemyHealth - damageTaken);
+    } else {
+      setPlayerHealth(playerHealth - damageTaken);
+    }
+  }
+
+
   //everytime 2 cards are flipped they are evaluated
   const evaluate = () => {
     const [first, second] = cardsFlipped; //using the destructured array as a way of searching cards array
     if (cards[first].name === cards[second].name) {
       setCardsCorrect((prev) => [...prev, first, second]);
+      dealDamage();
     }
     timeout.current = setTimeout(() => {
       setCardsFlipped([]);
@@ -98,6 +113,8 @@ function App() {
       </div>
       <Moves turn={turn}/>
       <div className="current-turn">{playerTurn === true ? <span>Player Turn</span> : <span>Enemy Turn</span>}</div>
+      <PlayerDisplay playerHealth={playerHealth}/>
+      <EnemyDisplay enemyHealth={enemyHealth}/>
     </div>
   );
 }

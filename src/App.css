@@ -2,6 +2,7 @@
 
 * {
   font-family: 'MedievalSharp', cursive;
+  user-select: none;
 }
 
 #root {
@@ -157,6 +158,7 @@ body {
 }
 
 .current-turn { 
+  user-select: none;
   position: absolute;
   left: 50%;
   bottom: 20%;
@@ -164,6 +166,51 @@ body {
   color: black;
   font-size: 3em;
 }
+
+
+/* ==================PLAYER DISPLAY */
+
+.player-container, .enemy-container {
+  position: absolute;
+  width: 16em;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 1.5em;
+  border: .15em solid grey;
+  border-radius: .5em;
+  background-color: burlywood;
+}
+
+.player-container {
+  left: 15%;
+  bottom: 20%;
+}
+
+.enemy-container {
+  right: 15%;
+  bottom: 20%;
+}
+
+.player-name, .enemy-name {
+  user-select: none;
+  padding: 1em;
+  font-size: 1.5em;
+}
+
+.player-icon, .enemy-icon {
+  height: 6em;
+  width: 6em;
+}
+
+.progress-container {
+  width: 12em;
+}
+
+
+
+/*========================Mobile Screens */
 
 @media only screen and (max-width: 768px) {
   /* For mobile phones: */

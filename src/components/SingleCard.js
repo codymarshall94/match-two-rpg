@@ -18,24 +18,6 @@ const RenderCard = ({ card, cardsFlipped, cardsCorrect, index }) => {
         </div>
       </div>
     </div>
-
-    //backup plan below =======
-    /*
-    <div
-      className={
-        cardsFlipped.includes(index) ? "card-tile card-flip" : "card-tile"
-      }
-    >
-      {cardsFlipped.includes(index) || cardsCorrect.includes(index) ? (
-        <img className="card-img" src={card.front} alt="card front" />
-      ) : (
-        <img
-          className="card-img"
-          src={require("../card-fronts/card-random.png")}
-          alt="card back"
-        />
-      )}
-    </div> */
   );
 };
 
