@@ -1,9 +1,10 @@
 import React from "react";
 
-const RenderCard = ({ card, cardsFlipped, cardsCorrect, index }) => {
+const RenderCard = ({ card, cardsFlipped, cardsCorrect, index, selectedCardIndexes, correctCardIndexes }) => {
+
   return (
     <div className={
-      cardsFlipped.includes(index) || cardsCorrect.includes(index) ? "card-tile" : "flip-card card-tile"
+     selectedCardIndexes.includes(index) || correctCardIndexes.includes(index) ? "card-tile" : "flip-card card-tile"
     }>
       <div className="flip-card-inner">
       <div className="flip-card-back">
@@ -27,17 +28,21 @@ function SingleCard({
   cardsFlipped,
   cardsCorrect,
   playerTurn,
-  index,
-}) {
+  selectedCardIndexes,
+  correctCardIndexes,
+}) 
+{
   return (
     <>
       {cards.map((card, index) => (
-        <div className={!playerTurn || cardsFlipped.length === 2 ? "disabled-card" : ""} key={index} onClick={() => handleCardClick(index)}>
+        <div className={!playerTurn || cardsFlipped.length === 2 ? "disabled-card" : ""} key={index} onClick={() => handleCardClick({card, index})}>
           <RenderCard
             card={card}
             cardsFlipped={cardsFlipped}
             cardsCorrect={cardsCorrect}
             index={index}
+            selectedCardIndexes={selectedCardIndexes}
+            correctCardIndexes={correctCardIndexes}
           />
         </div>
       ))}
