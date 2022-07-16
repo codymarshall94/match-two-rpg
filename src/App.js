@@ -25,7 +25,8 @@ function App() {
   const [playerHealth, setPlayerHealth] = useState(10);
   const [enemyHealth, setEnemyHealth] = useState(10);
   const timeout = useRef(null);
-  let damageTaken;
+  let damageTaken; //setting this variable so i can return it from the if statement in dealDamage()
+  const cardsCorrectRef = useRef([]);
 
   const handleCardClick = (cardItem) => {
     setCardsFlipped((prev) => [...prev, { cardItem }]);
@@ -42,18 +43,16 @@ function App() {
   //everytime 2 cards are flipped they are evaluated
   const evaluate = () => {
     const [first, second] = cardsFlipped; //using the destructured array as a way of searching cards array
-    console.log(first);
-    if (
-      cards[first.cardItem.index].name === cards[second.cardItem.index].name
-    ) {
-      setCardsCorrect((prev) => [...prev, first, second]);
+    if (cards[first.cardItem.index].name === cards[second.cardItem.index].name) {
+      cardsCorrectRef.current = [first, second];
+      //setCardsCorrect((prev) => [...prev, first, second]); use this if want to directly set state
       setCorrectCardIndexes((prev) => [
         ...prev,
         first.cardItem.index,
         second.cardItem.index,
       ]);
       dealDamage();
-    }
+    };
     timeout.current = setTimeout(() => {
       setCardsFlipped([]);
       setSelectedCardIndexes([]);
@@ -89,8 +88,8 @@ function App() {
 
   //function will only be called if a match is made
   const dealDamage = () => {
-    damageTaken = cardsCorrect[cardsCorrect.length - 1].cardItem.card.damage;
-    console.log(damageTaken);
+    damageTaken = cardsCorrectRef.current[cardsCorrectRef.current.length - 1].cardItem.card.damage;
+    console.log(damageTaken)
     if (playerTurn) {
       setEnemyHealth(enemyHealth - damageTaken);
     } else {
@@ -111,7 +110,7 @@ function App() {
 
   return (
     <div className="app-container">
-      <CombatLog cardsCorrect={cardsCorrect} cards={cards} />
+      <CombatLog cardsCorrect={cardsCorrect} cards={cards} cardsCorrectRef={cardsCorrectRef}/>
       <div className="card-grid">
         <SingleCard
           selectedCardIndexes={selectedCardIndexes}
