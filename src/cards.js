@@ -18,7 +18,7 @@ export const CARDS = [
         name: "haunting",
         front: require("./card-fronts/haunting.png"),
         effect: "deal 4 damage but you skip next turn",
-        damage: 1,
+        damage: 4,
     },
     {
         id: 4,
@@ -46,7 +46,7 @@ export const CARDS = [
         name: "deadly strike",
         front: require("./card-fronts/deadly-strike.png"),
         effect: "enemy takes 3 damage",
-        damage: 1,
+        damage: 3,
     },
     {
         id: 8,
@@ -66,7 +66,7 @@ export const CARDS = [
         id: 10,
         name: "death note",
         front: require("./card-fronts/death-note.png"),
-        effect: "enemy takes a randomized damage",
-        damage: 1,
+        effect: "enemy takes a randomized damage up to 5",
+        damage: Math.floor(Math.random() * (1 - 5) + 1),
     },
 ]
