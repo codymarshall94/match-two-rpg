@@ -1,10 +1,10 @@
 import React from 'react';
 
 
-function CombatLog({cardsCorrectRef}) {
+function CombatLog({cardsCorrectRef, cards}) {
   let currentEffect;
   if(cardsCorrectRef.current.length >= 1) {
-    currentEffect = cardsCorrectRef.current[cardsCorrectRef.current.length - 1].cardItem.card.effect || cardsCorrectRef.current[cardsCorrectRef.current.length - 1].cardItem.enemyFirst.effect;
+    currentEffect = cards[cardsCorrectRef.current.length - 1].effect || cards[cardsCorrectRef.current.length - 1].effect;
   }
   return (
     <div className='log-box'>
