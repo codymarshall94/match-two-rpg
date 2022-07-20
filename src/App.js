@@ -7,31 +7,36 @@ import Moves from "./components/Moves";
 import PlayerDisplay from "./components/PlayerDisplay";
 import SingleCard from "./components/SingleCard";
 
-//start game with all cards flipped upside down
-//allow player to select a card and flip upright
-//select a second card and check to see if they match
-// if they dont match, flip both back down, if they do match they remain up
-
 function App() {
   const [cards, setCards] = useState(
     CARDS.concat(CARDS).sort(() => Math.random() - 0.5)
   );
   const [cardsFlipped, setCardsFlipped] = useState([]);
-  const [selectedCardIndexes, setSelectedCardIndexes] = useState([]); //using this to easily get indexes to flip cards
-  const [correctCardIndexes, setCorrectCardIndexes] = useState([]); //same reason as selectedCardIndexes
-  const [cardsCorrect, setCardsCorrect] = useState([]);
+  const [cardsMatched, setCardsMatched] = useState([]);
+  const [availableCards, setAvailableCards] = useState([]);
   const [playerTurn, setPlayerTurn] = useState(true);
   const [turn, setTurn] = useState(1);
   const [playerHealth, setPlayerHealth] = useState(10);
   const [enemyHealth, setEnemyHealth] = useState(10);
+  //let damageTaken; //setting this variable so i can return it from the if statement in dealDamage()
+  const turnRef = useRef(1);
   const timeout = useRef(null);
-  let damageTaken; //setting this variable so i can return it from the if statement in dealDamage()
-  const cardsCorrectRef = useRef([]);
+  const cardsMatchedRef = useRef([]);
 
+  useEffect(() => {
+    cardsMatchedRef.current = cardsMatched;
+  }, [cardsMatched])
+  
+  
   const handleCardClick = (cardItem) => {
     setCardsFlipped((prev) => [...prev, { cardItem }]);
-    setSelectedCardIndexes((prev) => [...prev, cardItem.index]);
   };
+
+ /*const availableCard = () => {
+  let cardsUnflipped  = cards.map((card, index) => index);
+  let newCardsUnflipped = cardsUnflipped.filter((item) => !cardsCorrectRef.current.includes(item))
+  setAvailableCards(newCardsUnflipped);
+ } */
 
   useEffect(() => {
     if (cardsFlipped.length === 2) {
@@ -43,24 +48,19 @@ function App() {
   //everytime 2 cards are flipped they are evaluated
   const evaluate = () => {
     const [first, second] = cardsFlipped; //using the destructured array as a way of searching cards array
-    if (cards[first.cardItem.index].name === cards[second.cardItem.index].name) {
-      cardsCorrectRef.current = [first, second];
-      //setCardsCorrect((prev) => [...prev, first, second]); use this if want to directly set state
-      setCorrectCardIndexes((prev) => [
-        ...prev,
-        first.cardItem.index,
-        second.cardItem.index,
-      ]);
-      dealDamage();
+    if (
+      cards[first.cardItem.index].name === cards[second.cardItem.index].name
+    ) {
+      setCardsMatched(prev => [...prev, first.cardItem.index, second.cardItem.index]);
     };
+    //checkCompletion();
     timeout.current = setTimeout(() => {
       setCardsFlipped([]);
-      setSelectedCardIndexes([]);
+      setTurn((prev) => prev + 1);
     }, 500);
-    checkCompletion();
-    changeTurn();
   };
 
+  /*
   //setting the turn between enemy and player
   const changeTurn = () => {
     setTimeout(() => {
@@ -72,53 +72,68 @@ function App() {
       setTimeout(enemyTurn, 1000);
     }
   };
+*/
+
+//setting up a turn phase NEWCODE =============
+ useEffect(() => {
+  turnRef.current = turn;
+  if(turnRef.current % 2 === 0) {
+    setPlayerTurn(false);
+    enemyTurn();
+  } else {
+    setPlayerTurn(true);
+  }
+ },[turn])
+
 
   const enemyTurn = () => {
-    const randomIndex = Math.floor(Math.random() * (cards.length - 0) + 0);
-    const randomIndexTwo = Math.floor(Math.random() * (cards.length - 0) + 0);
+    const randomIndex = Math.floor(Math.random() * (availableCards.length - 0) + 0);
+    const randomIndexTwo = Math.floor(Math.random() * (availableCards.length - 0) + 0);
     setTimeout(() => {
       const enemyFirst = cards[randomIndex];
       handleCardClick({ card: enemyFirst, index: randomIndex });
-    }, 500);
+    }, 1000);
     setTimeout(() => {
       const enemySecond = cards[randomIndexTwo];
       handleCardClick({ card: enemySecond, index: randomIndexTwo });
-    }, 1500);
+    }, 2000);
   };
 
+  /*
   //function will only be called if a match is made
   const dealDamage = () => {
-    damageTaken = cardsCorrectRef.current[cardsCorrectRef.current.length - 1].cardItem.card.damage;
-    console.log(damageTaken)
+    damageTaken = cards[cardsCorrectRef.current.length - 1].damage;
+    console.log(damageTaken);
     if (playerTurn) {
       setEnemyHealth(enemyHealth - damageTaken);
     } else {
       setPlayerHealth(playerHealth - damageTaken);
     }
-  };
+  }; */
 
   //checking completion everytime a pair is evaluated
-  const checkCompletion = () => {
-    if (cards.length === cardsCorrect.length) {
+  /*const checkCompletion = () => {
+    if (cards.length === correctCardIndexes.length) {
       resetCards();
     }
-  };
+  }; 
 
   const resetCards = () => {
     setCards(null);
-  };
+  };*/
 
   return (
     <div className="app-container">
-      <CombatLog cardsCorrect={cardsCorrect} cards={cards} cardsCorrectRef={cardsCorrectRef}/>
+      {/*<CombatLog
+        cards={cards}
+        cardsCorrectRef={cardsCorrectRef}
+  />*/}
       <div className="card-grid">
         <SingleCard
-          selectedCardIndexes={selectedCardIndexes}
-          correctCardIndexes={correctCardIndexes}
           playerTurn={playerTurn}
           handleCardClick={handleCardClick}
           cardsFlipped={cardsFlipped}
-          cardsCorrect={cardsCorrect}
+          cardsMatchedRef={cardsMatchedRef}
           cards={cards}
         />
       </div>
@@ -130,7 +145,9 @@ function App() {
           <span>Enemy Turn</span>
         )}
       </div>
-      <PlayerDisplay playerHealth={playerHealth} />
+      <PlayerDisplay
+        playerHealth={playerHealth}
+      />
       <EnemyDisplay enemyHealth={enemyHealth} />
     </div>
   );
