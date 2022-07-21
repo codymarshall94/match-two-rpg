@@ -4,7 +4,6 @@ const RenderCard = ({ card, index, cardsFlipped, cardsMatchedRef}) => {
   const activeCardsRef = useRef([]);
   activeCardsRef.current = cardsFlipped.map(card => card.index);
   let cardMatchedNames = cardsMatchedRef.current.map(i => i.card.name);
-  console.log(cardMatchedNames);
   return (
     <div className={
      activeCardsRef.current.includes(index) || cardMatchedNames.includes(card.name) ? "card-tile" : "flip-card card-tile"

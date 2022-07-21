@@ -21,6 +21,10 @@ function App() {
   const turnRef = useRef(1);
   const timeout = useRef(null);
   const cardsMatchedRef = useRef([]);
+  const playerHealthRef = useRef(10);
+  const enemyHealthRef = useRef(10);
+  enemyHealthRef.current = enemyHealth;
+  playerHealthRef.current = playerHealth;
 
   const handleCardClick = (cardItem) => {
     setCardsFlipped((prev) => [...prev, cardItem]);
@@ -28,56 +32,59 @@ function App() {
 
   useEffect(() => {
     if (cardsFlipped.length === 2) {
-      setTimeout(evaluate, 500);
+      setTimeout(() => evaluate(), 500);
     }
-    // eslint-disable-next-line
   }, [cardsFlipped]);
 
-   //everytime 2 cards are flipped they are evaluated
-   const evaluate = () => {
+  //everytime 2 cards are flipped they are evaluated
+  const evaluate = async () => {
     const [first, second] = cardsFlipped; //using the destructured array as a way of searching cards array
-    if (
-      cards[first.index].name === cards[second.index].name
-    ) {
-      setCardsMatched(prev => [...prev, first, second]);
-    };
+    if (cards[first.index].name === cards[second.index].name) {
+      setCardsMatched((prev) => [...prev, first, second]);
+    }
     checkCompletion();
     timeout.current = setTimeout(() => {
       setCardsFlipped([]);
       setTurn((prev) => prev + 1);
-    }, 500);
+    }, 1000);
   };
 
   useEffect(() => {
     cardsMatchedRef.current = cardsMatched;
-    let cardNames = cardsMatchedRef.current.map(c => c.card.name);
+    let cardNames = cardsMatchedRef.current.map((c) => c.card.name);
     let cardsUnflipped = cards.map((card, index) => {
-      let newCardObj = {card, index}
-      return newCardObj});
-    let cardsUnflippedFiltered = cardsUnflipped.filter(c => !cardNames.includes(c.card.name));
+      let newCardObj = { card, index };
+      return newCardObj;
+    });
+    let cardsUnflippedFiltered = cardsUnflipped.filter(
+      (c) => !cardNames.includes(c.card.name)
+    );
     setAvailableCards(cardsUnflippedFiltered);
-  }, [cardsMatched]);
+    dealDamage();
+  }, [cardsMatched, cards]);
 
   //setting up a turn phase
   useEffect(() => {
-  turnRef.current = turn;
-  if(turnRef.current % 2 === 0) {
-    setPlayerTurn(false);
-    enemyTurn();
-  } else {
-    setPlayerTurn(true);
-  }
-  },[turn])
+    turnRef.current = turn;
+    if (turnRef.current % 2 === 0) {
+      setPlayerTurn(false);
+      enemyTurn();
+    } else {
+      setPlayerTurn(true);
+    }
+  }, [turn]);
 
   const enemyTurn = () => {
     let enemySelections = [];
-    while(enemySelections.length === 0) {
+    while (enemySelections.length === 0) {
       let random = Math.floor(Math.random() * (availableCards.length - 0) + 0);
-      let randomTwo = Math.floor(Math.random() * (availableCards.length - 0) + 0);
-      if(random !== randomTwo) {
+      let randomTwo = Math.floor(
+        Math.random() * (availableCards.length - 0) + 0
+      );
+      if (random !== randomTwo) {
         enemySelections.push(random, randomTwo);
-      };
-    };
+      }
+    }
     setTimeout(() => {
       const enemyFirst = availableCards[enemySelections[0]];
       handleCardClick(enemyFirst);
@@ -88,37 +95,40 @@ function App() {
     }, 2000);
   };
 
-  /*
   //function will only be called if a match is made
   const dealDamage = () => {
-    damageTaken = cards[cardsCorrectRef.current.length - 1].damage;
-    console.log(damageTaken);
-    if (playerTurn) {
-      setEnemyHealth(enemyHealth - damageTaken);
-    } else {
-      setPlayerHealth(playerHealth - damageTaken);
+    if (cardsMatchedRef.current.length !== 0) {
+      let damageTaken = cardsMatched[cardsMatched.length - 1].card.damage;
+      if (playerTurn) {
+        setEnemyHealth(enemyHealth - damageTaken);
+      } else {
+        setPlayerHealth(playerHealth - damageTaken);
+      }
     }
-  }; */
+  };
 
   //checking completion everytime a pair is evaluated
   const checkCompletion = () => {
-    if (cards.length === cardsMatchedRef.length) {
+    if (enemyHealth <= 0 || playerHealth <= 0) {
       resetCards();
     }
-  }; 
+    if (cards.length === cardsMatchedRef.current.length) {
+      resetCards();
+    }
+  };
 
   const resetCards = () => {
     let initialCardsState = cards;
     setCards(initialCardsState);
+    setPlayerHealth(10);
+    setEnemyHealth(10);
+    setTurn(1);
     setCardsMatched([]);
   };
 
   return (
     <div className="app-container">
-      <CombatLog
-        cards={cards}
-        cardsMatched={cardsMatched}
-      />
+      <CombatLog cards={cards} cardsMatched={cardsMatched} />
       <div className="card-grid">
         <SingleCard
           playerTurn={playerTurn}
@@ -136,10 +146,8 @@ function App() {
           <span>Enemy Turn</span>
         )}
       </div>
-      <PlayerDisplay
-        playerHealth={playerHealth}
-      />
-      <EnemyDisplay enemyHealth={enemyHealth} />
+      <PlayerDisplay playerHealthRef={playerHealthRef} />
+      <EnemyDisplay enemyHealthRef={enemyHealthRef} />
     </div>
   );
 }

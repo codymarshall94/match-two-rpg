@@ -1,6 +1,12 @@
-import React from 'react'
+import React, { useEffect } from 'react';
+import DamageCounter from "./DamageCounter";
 
-function EnemyDisplay({enemyHealth}) {
+function EnemyDisplay({enemyHealthRef}) {
+
+  useEffect(() => {
+    
+  },[enemyHealthRef])
+
   return (
     <div className="container enemy-container">
       <div className="enemy-icon-container">
@@ -9,18 +15,19 @@ function EnemyDisplay({enemyHealth}) {
           src={require("../enemy/drakkar-dragon.png")}
           alt=""
         />
+        <DamageCounter/>
       </div>
       <div className="enemy-name">Enemy</div>
       <div className="container progress-container">
         <div className="progress">
           <div
             className="progress-bar"
-            style={{width: `${enemyHealth * 10}%`}}
+            style={{width: `${enemyHealthRef.current * 10}%`}}
             role="progressbar"
             aria-valuenow="0"
             aria-valuemin="0"
             aria-valuemax="100"
-          >{enemyHealth}</div>
+          >{enemyHealthRef.current}</div>
         </div>
       </div>
     </div>

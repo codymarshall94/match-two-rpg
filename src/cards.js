@@ -25,7 +25,7 @@ export const CARDS = [
         name: "vile water",
         front: require("./card-fronts/vile-fluid.png"),
         effect: "you drink the water and lose 2 hp",
-        damage: 1,
+        damage: 2,
     },
     {
         id: 5,
@@ -67,6 +67,6 @@ export const CARDS = [
         name: "death note",
         front: require("./card-fronts/death-note.png"),
         effect: "enemy takes a randomized damage up to 5",
-        damage: Math.floor(Math.random() * (1 - 5) + 1),
+        damage: Math.floor(Math.random() * (5 - 1) + 1),
     },
 ]

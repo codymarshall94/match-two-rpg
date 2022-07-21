@@ -1,6 +1,8 @@
 import React from "react";
+import DamageCounter from "./DamageCounter";
 
-function PlayerDisplay({playerHealth}) {
+function PlayerDisplay({playerHealthRef}) {
+
   return (
     <div className="container player-container">
       <div className="player-icon-container">
@@ -9,6 +11,7 @@ function PlayerDisplay({playerHealth}) {
           src={require("../player/kenku-head.png")}
           alt=""
         />
+        <DamageCounter/>
       </div>
       <div className="player-name">Player</div>
       <div className="container progress-container">
@@ -16,11 +19,11 @@ function PlayerDisplay({playerHealth}) {
           <div
             className="progress-bar bg-success"
             role="progressbar"
-            style={{width: `${playerHealth * 10}%`}}
+            style={{width: `${playerHealthRef.current * 10}%`}}
             aria-valuenow="0"
             aria-valuemin="0"
             aria-valuemax="100"
-          >{playerHealth}</div>
+          >{playerHealthRef.current}</div>
         </div>
       </div>
     </div>
