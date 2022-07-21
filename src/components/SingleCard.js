@@ -2,10 +2,12 @@ import React, { useRef } from "react";
 
 const RenderCard = ({ card, index, cardsFlipped, cardsMatchedRef}) => {
   const activeCardsRef = useRef([]);
-  activeCardsRef.current = cardsFlipped.map(card => card.cardItem.index);
+  activeCardsRef.current = cardsFlipped.map(card => card.index);
+  let cardMatchedNames = cardsMatchedRef.current.map(i => i.card.name);
+  console.log(cardMatchedNames);
   return (
     <div className={
-     activeCardsRef.current.includes(index) || cardsMatchedRef.current.includes(index) ? "card-tile" : "flip-card card-tile"
+     activeCardsRef.current.includes(index) || cardMatchedNames.includes(card.name) ? "card-tile" : "flip-card card-tile"
     }>
       <div className="flip-card-inner">
       <div className="flip-card-back">
