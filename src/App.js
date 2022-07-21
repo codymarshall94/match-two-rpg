@@ -50,7 +50,6 @@ function App() {
 
   useEffect(() => {
     cardsMatchedRef.current = cardsMatched;
-    console.log(cardsMatched);
     let cardNames = cardsMatchedRef.current.map(c => c.card.name);
     let cardsUnflipped = cards.map((card, index) => {
       let newCardObj = {card, index}
@@ -59,8 +58,8 @@ function App() {
     setAvailableCards(cardsUnflippedFiltered);
   }, [cardsMatched]);
 
-//setting up a turn phase
- useEffect(() => {
+  //setting up a turn phase
+  useEffect(() => {
   turnRef.current = turn;
   if(turnRef.current % 2 === 0) {
     setPlayerTurn(false);
@@ -68,9 +67,7 @@ function App() {
   } else {
     setPlayerTurn(true);
   }
- },[turn])
-
-
+  },[turn])
 
   const enemyTurn = () => {
     let enemySelections = [];
@@ -118,10 +115,10 @@ function App() {
 
   return (
     <div className="app-container">
-      {/*<CombatLog
+      <CombatLog
         cards={cards}
-        cardsCorrectRef={cardsCorrectRef}
-  />*/}
+        cardsMatched={cardsMatched}
+      />
       <div className="card-grid">
         <SingleCard
           playerTurn={playerTurn}
