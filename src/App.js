@@ -18,25 +18,13 @@ function App() {
   const [turn, setTurn] = useState(1);
   const [playerHealth, setPlayerHealth] = useState(10);
   const [enemyHealth, setEnemyHealth] = useState(10);
-  //let damageTaken; //setting this variable so i can return it from the if statement in dealDamage()
   const turnRef = useRef(1);
   const timeout = useRef(null);
   const cardsMatchedRef = useRef([]);
 
-  useEffect(() => {
-    cardsMatchedRef.current = cardsMatched;
-  }, [cardsMatched])
-  
-  
   const handleCardClick = (cardItem) => {
-    setCardsFlipped((prev) => [...prev, { cardItem }]);
+    setCardsFlipped((prev) => [...prev, cardItem]);
   };
-
- /*const availableCard = () => {
-  let cardsUnflipped  = cards.map((card, index) => index);
-  let newCardsUnflipped = cardsUnflipped.filter((item) => !cardsCorrectRef.current.includes(item))
-  setAvailableCards(newCardsUnflipped);
- } */
 
   useEffect(() => {
     if (cardsFlipped.length === 2) {
@@ -45,36 +33,33 @@ function App() {
     // eslint-disable-next-line
   }, [cardsFlipped]);
 
-  //everytime 2 cards are flipped they are evaluated
-  const evaluate = () => {
+   //everytime 2 cards are flipped they are evaluated
+   const evaluate = () => {
     const [first, second] = cardsFlipped; //using the destructured array as a way of searching cards array
     if (
-      cards[first.cardItem.index].name === cards[second.cardItem.index].name
+      cards[first.index].name === cards[second.index].name
     ) {
-      setCardsMatched(prev => [...prev, first.cardItem.index, second.cardItem.index]);
+      setCardsMatched(prev => [...prev, first, second]);
     };
-    //checkCompletion();
+    checkCompletion();
     timeout.current = setTimeout(() => {
       setCardsFlipped([]);
       setTurn((prev) => prev + 1);
     }, 500);
   };
 
-  /*
-  //setting the turn between enemy and player
-  const changeTurn = () => {
-    setTimeout(() => {
-      setTurn(turn + 1);
-      turn % 2 === 0 ? setPlayerTurn(true) : setPlayerTurn(false);
-    }, 500);
-    if (playerTurn) {
-      //currently working with playerTurn set to positive. need to figure out why
-      setTimeout(enemyTurn, 1000);
-    }
-  };
-*/
+  useEffect(() => {
+    cardsMatchedRef.current = cardsMatched;
+    console.log(cardsMatched);
+    let cardNames = cardsMatchedRef.current.map(c => c.card.name);
+    let cardsUnflipped = cards.map((card, index) => {
+      let newCardObj = {card, index}
+      return newCardObj});
+    let cardsUnflippedFiltered = cardsUnflipped.filter(c => !cardNames.includes(c.card.name));
+    setAvailableCards(cardsUnflippedFiltered);
+  }, [cardsMatched]);
 
-//setting up a turn phase NEWCODE =============
+//setting up a turn phase
  useEffect(() => {
   turnRef.current = turn;
   if(turnRef.current % 2 === 0) {
@@ -86,16 +71,23 @@ function App() {
  },[turn])
 
 
+
   const enemyTurn = () => {
-    const randomIndex = Math.floor(Math.random() * (availableCards.length - 0) + 0);
-    const randomIndexTwo = Math.floor(Math.random() * (availableCards.length - 0) + 0);
+    let enemySelections = [];
+    while(enemySelections.length === 0) {
+      let random = Math.floor(Math.random() * (availableCards.length - 0) + 0);
+      let randomTwo = Math.floor(Math.random() * (availableCards.length - 0) + 0);
+      if(random !== randomTwo) {
+        enemySelections.push(random, randomTwo);
+      };
+    };
     setTimeout(() => {
-      const enemyFirst = cards[randomIndex];
-      handleCardClick({ card: enemyFirst, index: randomIndex });
+      const enemyFirst = availableCards[enemySelections[0]];
+      handleCardClick(enemyFirst);
     }, 1000);
     setTimeout(() => {
-      const enemySecond = cards[randomIndexTwo];
-      handleCardClick({ card: enemySecond, index: randomIndexTwo });
+      const enemySecond = availableCards[enemySelections[1]];
+      handleCardClick(enemySecond);
     }, 2000);
   };
 
@@ -112,15 +104,17 @@ function App() {
   }; */
 
   //checking completion everytime a pair is evaluated
-  /*const checkCompletion = () => {
-    if (cards.length === correctCardIndexes.length) {
+  const checkCompletion = () => {
+    if (cards.length === cardsMatchedRef.length) {
       resetCards();
     }
   }; 
 
   const resetCards = () => {
-    setCards(null);
-  };*/
+    let initialCardsState = cards;
+    setCards(initialCardsState);
+    setCardsMatched([]);
+  };
 
   return (
     <div className="app-container">
