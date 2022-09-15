@@ -18,6 +18,7 @@ function App() {
   const [turn, setTurn] = useState(1);
   const [playerHealth, setPlayerHealth] = useState(10);
   const [enemyHealth, setEnemyHealth] = useState(10);
+  const [gameActive, setGameActive] = useState(true);
   const turnRef = useRef(1);
   const timeout = useRef(null);
   const cardsMatchedRef = useRef([]);
@@ -31,23 +32,18 @@ function App() {
   };
 
   useEffect(() => {
+    const evaluate = async () => {
+      const [first, second] = cardsFlipped;
+      if (cards[first.index].name === cards[second.index].name) {
+        setCardsMatched((prev) => [...prev, first, second]);
+      }
+      checkCompletion();
+    };
     if (cardsFlipped.length === 2) {
       setTimeout(() => evaluate(), 500);
     }
-  }, [cardsFlipped]);
-
-  //everytime 2 cards are flipped they are evaluated
-  const evaluate = async () => {
-    const [first, second] = cardsFlipped; //using the destructured array as a way of searching cards array
-    if (cards[first.index].name === cards[second.index].name) {
-      setCardsMatched((prev) => [...prev, first, second]);
-    }
-    checkCompletion();
-    timeout.current = setTimeout(() => {
-      setCardsFlipped([]);
-      setTurn((prev) => prev + 1);
-    }, 1000);
-  };
+    // eslint-disable-next-line
+  }, [cardsFlipped, cards]);
 
   useEffect(() => {
     cardsMatchedRef.current = cardsMatched;
@@ -59,8 +55,20 @@ function App() {
     let cardsUnflippedFiltered = cardsUnflipped.filter(
       (c) => !cardNames.includes(c.card.name)
     );
+
+    const calculateCardEffects = () => {
+      if (cardsMatchedRef.current.length !== 0) {
+        let damageTaken = cardsMatched[cardsMatched.length - 1].card.damage;
+        if (playerTurn) {
+          setEnemyHealth((prevHp) => prevHp - damageTaken);
+        } else {
+          setPlayerHealth((prevHp) => prevHp - damageTaken);
+        }
+      }
+    };
     setAvailableCards(cardsUnflippedFiltered);
-    dealDamage();
+    calculateCardEffects();
+    // eslint-disable-next-line
   }, [cardsMatched, cards]);
 
   //setting up a turn phase
@@ -68,56 +76,55 @@ function App() {
     turnRef.current = turn;
     if (turnRef.current % 2 === 0) {
       setPlayerTurn(false);
-      enemyTurn();
     } else {
       setPlayerTurn(true);
     }
   }, [turn]);
 
-  const enemyTurn = () => {
-    let enemySelections = [];
-    while (enemySelections.length === 0) {
-      let random = Math.floor(Math.random() * (availableCards.length - 0) + 0);
-      let randomTwo = Math.floor(
-        Math.random() * (availableCards.length - 0) + 0
-      );
-      if (random !== randomTwo) {
-        enemySelections.push(random, randomTwo);
+  useEffect(() => {
+    if (!playerTurn) {
+      let enemySelections = [];
+      while (enemySelections.length === 0) {
+        let random = Math.floor(
+          Math.random() * (availableCards.length - 0) + 0
+        );
+        let randomTwo = Math.floor(
+          Math.random() * (availableCards.length - 0) + 0
+        );
+        if (random !== randomTwo) {
+          enemySelections.push(random, randomTwo);
+        }
       }
+      setTimeout(() => {
+        const enemyFirst = availableCards[enemySelections[0]];
+        handleCardClick(enemyFirst);
+      }, 1000);
+      setTimeout(() => {
+        const enemySecond = availableCards[enemySelections[1]];
+        handleCardClick(enemySecond);
+      }, 2000);
     }
-    setTimeout(() => {
-      const enemyFirst = availableCards[enemySelections[0]];
-      handleCardClick(enemyFirst);
-    }, 1000);
-    setTimeout(() => {
-      const enemySecond = availableCards[enemySelections[1]];
-      handleCardClick(enemySecond);
-    }, 2000);
-  };
-
-  //function will only be called if a match is made
-  const dealDamage = () => {
-    if (cardsMatchedRef.current.length !== 0) {
-      let damageTaken = cardsMatched[cardsMatched.length - 1].card.damage;
-      if (playerTurn) {
-        setEnemyHealth(enemyHealth - damageTaken);
-      } else {
-        setPlayerHealth(playerHealth - damageTaken);
-      }
-    }
-  };
+  }, [playerTurn, availableCards]);
 
   //checking completion everytime a pair is evaluated
   const checkCompletion = () => {
-    if (enemyHealth <= 0 || playerHealth <= 0) {
-      resetCards();
-    }
-    if (cards.length === cardsMatchedRef.current.length) {
-      resetCards();
+    if (
+      gameActive &&
+      (enemyHealth <= 0 ||
+        playerHealth <= 0 ||
+        cards.length === cardsMatchedRef.current.length)
+    ) {
+      setGameActive(false);
+      resetGame();
+    } else {
+      timeout.current = setTimeout(() => {
+        setCardsFlipped([]);
+        setTurn((prev) => prev + 1);
+      }, 1000);
     }
   };
 
-  const resetCards = () => {
+  const resetGame = () => {
     let initialCardsState = cards;
     setCards(initialCardsState);
     setPlayerHealth(10);
