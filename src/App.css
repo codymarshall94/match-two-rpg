@@ -133,7 +133,6 @@ body {
   left: 50%;
   transform: translateX(-50%) rotate(-90deg);;
   clip-path: polygon(23% 0, 100% 0%, 100% 100%, 25% 100%, 0% 50%);
-  
 }
 
 .shield {
@@ -151,6 +150,7 @@ body {
   transform: rotate(90deg);
   font-size: 1em;
 }
+
 .turn-number {
   font-weight: bold;
   transform: rotate(90deg);
@@ -172,14 +172,14 @@ body {
 
 .player-container, .enemy-container {
   position: absolute;
-  width: 16em;
+  width: 16rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 1.5em;
-  border: .15em solid grey;
-  border-radius: .5em;
+  padding: 1.5rem;
+  border: .15rem solid grey;
+  border-radius: .5rem;
   background-color: burlywood;
 }
 
@@ -195,13 +195,13 @@ body {
 
 .player-name, .enemy-name {
   user-select: none;
-  padding: 1em;
+  padding: 1rem;
   font-size: 1.5em;
 }
 
 .player-icon, .enemy-icon {
-  height: 6em;
-  width: 6em;
+  height: 6rem;
+  width: 6rem;
 }
 
 .player-icon-container, .enemy-icon-container {
@@ -209,7 +209,7 @@ body {
 }
 
 .progress-container {
-  width: 12em;
+  width: 12rem;
 }
 
 
@@ -242,29 +242,137 @@ z-index: 999;
   100%  {opacity: 0;}
 }
 
+/* mobile phone styles ====================================================*/ 
 
-/*========================Mobile Screens */
+@media only screen and (min-width: 200px) and (max-width: 767px)  {
+  .card-grid {
+    grid-template-columns: repeat(5, 4em);
+    grid-template-rows: repeat(5, 4em);
+   }
+  
+   .log-box {
+    margin: auto;
+    height: 12em;
+    width: 24em;
+   }
+  
+   .combat-text {
+    font-size: 1.5em;
+   }
+  
+   .current-turn {
+    font-size: 2em;
+   }
+  
+   .player-container, .enemy-container {
+    width: 10rem;
+    height: 10rem;
+    padding: 1.5em;
+  }
+  
+  .player-container {
+    left: 5%;
+    bottom: 5%;
+  }
+  
+  .enemy-container {
+    right: 5%;
+    bottom: 5%;
+  }
+  
+  .player-name, .enemy-name {
+    padding: .5em;
+    font-size: 1.25em;
+  }
+  
+  .player-icon, .enemy-icon {
+    height: 4rem;
+    width: 4rem;
+  }
+  
+  .progress-container {
+    width: 8rem;
+  }
+  .turn-text {
+    transform: rotate(90deg);
+    font-size: 1.5em;
+  }
 
-@media only screen and (max-width: 768px) {
-  /* For mobile phones: */
- .card-grid {
-  grid-template-columns: repeat(5, 4em);
-  grid-template-rows: repeat(5, 4em);
- }
+  .moves-container {
+    height: 6em;
+    width: 6em;
+    position: absolute;
+    bottom: 25%;
+    left: 20%;
+    transform: translateX(-50%) rotate(-90deg);;
+    clip-path: polygon(23% 0, 100% 0%, 100% 100%, 25% 100%, 0% 50%);
+  }
 
- .log-box {
-  margin: auto;
-  height: 12em;
-  width: 24em;
- }
+  .turn-text {
+    transform: rotate(90deg);
+    font-size: 1.5em;
+  }
 
- .combat-text {
-  font-size: 1.5em;
- }
+  .moves-container {
+    height: 6em;
+    width: 6em;
+    position: absolute;
+    bottom: 25%;
+    left: 20%;
+    transform: translateX(-50%) rotate(-90deg);;
+    clip-path: polygon(23% 0, 100% 0%, 100% 100%, 25% 100%, 0% 50%);
+  }
 
- .current-turn {
-  font-size: 2em;
- }
+  .current-turn { 
+    width: 14rem;
+    text-align: center;
+    font-size: 2em;
+    bottom: 28%;
+    left: 60%;
+  }
+  }
+
+
+/* Ipad / tablet styles ==================================================*/
+
+@media only screen and (min-width: 768px) and (max-width: 1024px)  {
+   .log-box {
+    margin: auto;
+    height: 14rem;
+    width: 32rem;
+   }
+   .player-container, .enemy-container {
+    width: 16rem;
+    height: 12rem;
+    padding: .5em;
+  }
+
+  .player-name, .enemy-name {
+    padding: .5rem;
+    font-size: 1.5em;
+  }
+  
+  .player-icon, .enemy-icon {
+    height: 6rem;
+    width: 6rem;
+  }
+  
+  .player-icon-container, .enemy-icon-container {
+    position: relative;
+  }
+
+  .player-container {
+    left: 5%;
+    bottom: 5%;
+  }
+  
+  .enemy-container {
+    right: 5%;
+    bottom: 5%;
+  }
+  
+  .progress-container {
+    width: 12rem;
+  }
 }
-
 

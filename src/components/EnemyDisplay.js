@@ -1,12 +1,7 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import DamageCounter from "./DamageCounter";
 
 function EnemyDisplay({enemyHealthRef}) {
-
-  useEffect(() => {
-    
-  },[enemyHealthRef])
-
   return (
     <div className="container enemy-container">
       <div className="enemy-icon-container">
