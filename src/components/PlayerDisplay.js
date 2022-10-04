@@ -1,7 +1,7 @@
 import React from "react";
 import "../css/playerenemydisplay.css";
 
-function PlayerDisplay() {
+function PlayerDisplay({playerHealth}) {
 
   return (
     <div className="container player-container">
@@ -18,11 +18,11 @@ function PlayerDisplay() {
           <div
             className="progress-bar bg-success"
             role="progressbar"
-            style={{width: 10}}
-            aria-valuenow="0"
+            style={{width: `${playerHealth * 10}%`}}
+            aria-valuenow={playerHealth * 10}
             aria-valuemin="0"
             aria-valuemax="100"
-          ></div>
+          >{playerHealth}</div>
         </div>
       </div>
     </div>
