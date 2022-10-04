@@ -3,13 +3,14 @@
     position: absolute;
     justify-content: center;
     align-items: center;
-    background-color: burlywood;
+    background-color: #573720;
     height: 5rem;
     width: 5rem;
-    bottom: 27.5%;
+    bottom: 20%;
     left: 50%;
     transform: translateX(-50%) rotate(-90deg);
     clip-path: polygon(23% 0, 100% 0%, 100% 100%, 25% 100%, 0% 50%);
+    z-index: 999;
   }
   
   .shield {
