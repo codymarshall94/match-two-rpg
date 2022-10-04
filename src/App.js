@@ -13,6 +13,9 @@ function App() {
   const [cardsMatched, setCardsMatched] = useState([]);
   const [turn, setTurn] = useState(1);
   const [playerTurn, setPlayerTurn] = useState(true);
+  const [playerHealth, setPlayerHealth] = useState(10);
+  const [enemyHealth, setEnemyHealth] = useState(10); 
+  const [combatLog, setCombatLog] = useState([]);
   const unflippedCards = cards.filter((card) => !cardsMatched.includes(card));
 
   //sort the cards on the first render
@@ -29,8 +32,8 @@ function App() {
       const firstCard = cardsFlipped[0];
       const secondCard = cardsFlipped[1];
 
-      if (firstCard.card.id === secondCard.card.id) {
-        setCardsMatched((prev) => [...prev, firstCard.card, secondCard.card]);
+      if (firstCard.card.name === secondCard.card.name) {
+        setCardsMatched((prev) => [...prev, firstCard, secondCard]);
         setTimeout(() => {
           setCardsFlipped([]);
         }, 1000);
@@ -60,6 +63,7 @@ function App() {
       unflippedCards[Math.floor(Math.random() * unflippedCards.length)],
       unflippedCards[Math.floor(Math.random() * unflippedCards.length)],
     ];
+    //if the cards are the same, enemy picks a new card
     if (randomCards[0] === randomCards[1]) {
       randomCards[1] =
         unflippedCards[Math.floor(Math.random() * unflippedCards.length)];
@@ -69,11 +73,27 @@ function App() {
     const firstCardIndex = cards.indexOf(firstCard);
     const secondCardIndex = cards.indexOf(secondCard);
 
-    //card objects
     const enemyCardObj = { card: firstCard, index: firstCardIndex };
     const enemyCardObj2 = { card: secondCard, index: secondCardIndex };
     setTimeout(() => setCardsFlipped((prev) => [...prev, enemyCardObj]), 1000);
     setTimeout(() => setCardsFlipped((prev) => [...prev, enemyCardObj2]), 2000);
+  };
+
+  //check to see if the game is over
+  useEffect(() => {
+    if (cardsMatched.length === cards.length) {
+      alert("Game Over");
+      resetGame();
+    }
+  }, [cardsMatched, cards]);
+
+  //reset the game
+  const resetGame = () => {
+    setCards(CARDS.sort(() => Math.random() - 0.5));
+    setCardsFlipped([]);
+    setCardsMatched([]);
+    setTurn(1);
+    setPlayerTurn(true);
   };
 
   return (
@@ -85,10 +105,11 @@ function App() {
         handleCardClick={handleCardClick}
         cardsFlipped={cardsFlipped}
         cardsMatched={cardsMatched}
+        playerTurn={playerTurn}
       />
       <TurnCount turn={turn} playerTurn={playerTurn} />
-      <PlayerDisplay />
-      <EnemyDisplay />
+      <PlayerDisplay playerHealth={playerHealth}/>
+      <EnemyDisplay enemyHealth={enemyHealth}/>
     </div>
   );
 }
