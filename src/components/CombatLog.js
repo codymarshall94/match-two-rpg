@@ -1,11 +1,11 @@
 import React from 'react';
 import "../css/combatlog.css";
 
-function CombatLog() {
+function CombatLog({combatLog}) {
 
   return (
     <div className='log-box'>
-        <span className='combat-text'>Combat Log</span>
+        <span className='combat-text'>{combatLog}</span>
     </div>
   )
 }
