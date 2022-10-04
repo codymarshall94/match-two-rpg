@@ -14,8 +14,8 @@ function App() {
   const [turn, setTurn] = useState(1);
   const [playerTurn, setPlayerTurn] = useState(true);
   const [playerHealth, setPlayerHealth] = useState(10);
-  const [enemyHealth, setEnemyHealth] = useState(10); 
-  const [combatLog, setCombatLog] = useState([]);
+  const [enemyHealth, setEnemyHealth] = useState(10);
+  const [combatLog, setCombatLog] = useState("Select 2 Cards!");
   const unflippedCards = cards.filter((card) => !cardsMatched.includes(card));
 
   //sort the cards on the first render
@@ -27,33 +27,60 @@ function App() {
     setCardsFlipped([...cardsFlipped, { card, index }]);
   };
 
+  // this useEffect is called when the cardsFlipped array changes (when a card is clicked)
   useEffect(() => {
     if (cardsFlipped.length === 2) {
       const firstCard = cardsFlipped[0];
       const secondCard = cardsFlipped[1];
+      const damage = firstCard.card.damage;
 
       if (firstCard.card.name === secondCard.card.name) {
         setCardsMatched((prev) => [...prev, firstCard, secondCard]);
+        setCombatLog(() => `${firstCard.card.effect}!`);
+        setTimeout(() => {
+          dealDamage(damage);
+        }, 1000);
+
         setTimeout(() => {
           setCardsFlipped([]);
-        }, 1000);
+        }, 3000);
+
+        setTimeout(() => {
+          setTurn((prev) => prev + 1);
+        }, 4000);
       } else {
         setTimeout(() => {
           setCardsFlipped([]);
         }, 1000);
+
+        setTimeout(() => {
+          setTurn((prev) => prev + 1);
+        }, 2000);
       }
-      setTimeout(() => {
-        setTurn((prev) => prev + 1);
-      }, 2000);
     }
   }, [cardsFlipped]);
 
+  //deals damage to player or enemy is a match is made
+  const dealDamage = (damageAmount) => {
+    if (playerTurn === true) {
+      setEnemyHealth((prev) => prev - damageAmount);
+      console.log(damageAmount);
+    } else {
+      setPlayerHealth((prev) => prev - damageAmount);
+    }
+  };
+
+  //this useeffect is called when the turn changes
   useEffect(() => {
     if (turn % 2 === 0) {
       setPlayerTurn(false);
-      enemyTurn();
+      setCombatLog(() => "Enemy Turn");
+      setTimeout(() => {
+        enemyTurn();
+      }, 100);
     } else {
       setPlayerTurn(true);
+      setCombatLog(() => "Player Turn");
     }
   }, [turn]);
 
@@ -81,11 +108,14 @@ function App() {
 
   //check to see if the game is over
   useEffect(() => {
-    if (cardsMatched.length === cards.length) {
-      alert("Game Over");
+    if (
+      cardsMatched.length === cards.length ||
+      playerHealth <= 0 ||
+      enemyHealth <= 0
+    ) {
       resetGame();
     }
-  }, [cardsMatched, cards]);
+  }, [cardsMatched, cards, playerHealth, enemyHealth]);
 
   //reset the game
   const resetGame = () => {
@@ -98,7 +128,7 @@ function App() {
 
   return (
     <div className="app-container">
-      <CombatLog />
+      <CombatLog combatLog={combatLog} />
       <CardGrid
         cards={cards}
         setCards={setCards}
@@ -108,8 +138,8 @@ function App() {
         playerTurn={playerTurn}
       />
       <TurnCount turn={turn} playerTurn={playerTurn} />
-      <PlayerDisplay playerHealth={playerHealth}/>
-      <EnemyDisplay enemyHealth={enemyHealth}/>
+      <PlayerDisplay playerHealth={playerHealth} />
+      <EnemyDisplay enemyHealth={enemyHealth} />
     </div>
   );
 }
