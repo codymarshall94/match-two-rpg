@@ -1,160 +1,94 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
 import { CARDS } from "./cards";
+import CardGrid from "./components/CardGrid";
 import CombatLog from "./components/CombatLog";
-import EnemyDisplay from "./components/EnemyDisplay";
-import Moves from "./components/Moves";
 import PlayerDisplay from "./components/PlayerDisplay";
-import SingleCard from "./components/SingleCard";
+import EnemyDisplay from "./components/EnemyDisplay";
+import TurnCount from "./components/TurnCount";
 
 function App() {
-  const [cards, setCards] = useState(
-    CARDS.concat(CARDS).sort(() => Math.random() - 0.5)
-  );
+  const [cards, setCards] = useState([]);
   const [cardsFlipped, setCardsFlipped] = useState([]);
   const [cardsMatched, setCardsMatched] = useState([]);
-  const [availableCards, setAvailableCards] = useState([]);
-  const [playerTurn, setPlayerTurn] = useState(true);
   const [turn, setTurn] = useState(1);
-  const [playerHealth, setPlayerHealth] = useState(10);
-  const [enemyHealth, setEnemyHealth] = useState(10);
-  const [gameActive, setGameActive] = useState(true);
-  const turnRef = useRef(1);
-  const timeout = useRef(null);
-  const cardsMatchedRef = useRef([]);
-  const playerHealthRef = useRef(10);
-  const enemyHealthRef = useRef(10);
-  enemyHealthRef.current = enemyHealth;
-  playerHealthRef.current = playerHealth;
+  const [playerTurn, setPlayerTurn] = useState(true);
+  const unflippedCards = cards.filter((card) => !cardsMatched.includes(card));
 
-  const handleCardClick = (cardItem) => {
-    setCardsFlipped((prev) => [...prev, cardItem]);
+  //sort the cards on the first render
+  useEffect(() => {
+    setCards(CARDS.sort(() => Math.random() - 0.5));
+  }, []);
+
+  const handleCardClick = ({ card, index }) => {
+    setCardsFlipped([...cardsFlipped, { card, index }]);
   };
 
   useEffect(() => {
-    const evaluate = async () => {
-      const [first, second] = cardsFlipped;
-      if (cards[first.index].name === cards[second.index].name) {
-        setCardsMatched((prev) => [...prev, first, second]);
-      }
-      checkCompletion();
-    };
     if (cardsFlipped.length === 2) {
-      setTimeout(() => evaluate(), 500);
-    }
-    // eslint-disable-next-line
-  }, [cardsFlipped, cards]);
+      const firstCard = cardsFlipped[0];
+      const secondCard = cardsFlipped[1];
 
-  useEffect(() => {
-    cardsMatchedRef.current = cardsMatched;
-    let cardNames = cardsMatchedRef.current.map((c) => c.card.name);
-    let cardsUnflipped = cards.map((card, index) => {
-      let newCardObj = { card, index };
-      return newCardObj;
-    });
-    let cardsUnflippedFiltered = cardsUnflipped.filter(
-      (c) => !cardNames.includes(c.card.name)
-    );
-
-    const calculateCardEffects = () => {
-      if (cardsMatchedRef.current.length !== 0) {
-        let damageTaken = cardsMatched[cardsMatched.length - 1].card.damage;
-        if (playerTurn) {
-          setEnemyHealth((prevHp) => prevHp - damageTaken);
-        } else {
-          setPlayerHealth((prevHp) => prevHp - damageTaken);
-        }
+      if (firstCard.card.id === secondCard.card.id) {
+        setCardsMatched((prev) => [...prev, firstCard.card, secondCard.card]);
+        setTimeout(() => {
+          setCardsFlipped([]);
+        }, 1000);
+      } else {
+        setTimeout(() => {
+          setCardsFlipped([]);
+        }, 1000);
       }
-    };
-    setAvailableCards(cardsUnflippedFiltered);
-    calculateCardEffects();
-    // eslint-disable-next-line
-  }, [cardsMatched, cards]);
+      setTimeout(() => {
+        setTurn((prev) => prev + 1);
+      }, 2000);
+    }
+  }, [cardsFlipped]);
 
-  //setting up a turn phase
   useEffect(() => {
-    turnRef.current = turn;
-    if (turnRef.current % 2 === 0) {
+    if (turn % 2 === 0) {
       setPlayerTurn(false);
+      enemyTurn();
     } else {
       setPlayerTurn(true);
     }
   }, [turn]);
 
-  useEffect(() => {
-    if (!playerTurn) {
-      let enemySelections = [];
-      while (enemySelections.length === 0) {
-        let random = Math.floor(
-          Math.random() * (availableCards.length - 0) + 0
-        );
-        let randomTwo = Math.floor(
-          Math.random() * (availableCards.length - 0) + 0
-        );
-        if (random !== randomTwo) {
-          enemySelections.push(random, randomTwo);
-        }
-      }
-      setTimeout(() => {
-        const enemyFirst = availableCards[enemySelections[0]];
-        handleCardClick(enemyFirst);
-      }, 1000);
-      setTimeout(() => {
-        const enemySecond = availableCards[enemySelections[1]];
-        handleCardClick(enemySecond);
-      }, 2000);
+  const enemyTurn = () => {
+    //2 random cards from the unflipped cards but the both cards cannot be the same
+    const randomCards = [
+      unflippedCards[Math.floor(Math.random() * unflippedCards.length)],
+      unflippedCards[Math.floor(Math.random() * unflippedCards.length)],
+    ];
+    if (randomCards[0] === randomCards[1]) {
+      randomCards[1] =
+        unflippedCards[Math.floor(Math.random() * unflippedCards.length)];
     }
-  }, [playerTurn, availableCards]);
+    //destructure the array
+    const [firstCard, secondCard] = randomCards;
+    const firstCardIndex = cards.indexOf(firstCard);
+    const secondCardIndex = cards.indexOf(secondCard);
 
-  //checking completion everytime a pair is evaluated
-  const checkCompletion = () => {
-    if (
-      gameActive &&
-      (enemyHealth <= 0 ||
-        playerHealth <= 0 ||
-        cards.length === cardsMatchedRef.current.length)
-    ) {
-      setGameActive(false);
-      resetGame();
-    } else {
-      timeout.current = setTimeout(() => {
-        setCardsFlipped([]);
-        setTurn((prev) => prev + 1);
-      }, 1000);
-    }
-  };
-
-  const resetGame = () => {
-    let initialCardsState = cards;
-    setCards(initialCardsState);
-    setPlayerHealth(10);
-    setEnemyHealth(10);
-    setTurn(1);
-    setCardsMatched([]);
+    //card objects
+    const enemyCardObj = { card: firstCard, index: firstCardIndex };
+    const enemyCardObj2 = { card: secondCard, index: secondCardIndex };
+    setTimeout(() => setCardsFlipped((prev) => [...prev, enemyCardObj]), 1000);
+    setTimeout(() => setCardsFlipped((prev) => [...prev, enemyCardObj2]), 2000);
   };
 
   return (
     <div className="app-container">
-      <CombatLog cards={cards} cardsMatched={cardsMatched} />
-      <div className="card-grid">
-        <SingleCard
-          playerTurn={playerTurn}
-          handleCardClick={handleCardClick}
-          cardsFlipped={cardsFlipped}
-          cardsMatchedRef={cardsMatchedRef}
-          cards={cards}
-        />
-      </div>
-      <Moves turn={turn} />
-      <div className="current-turn">
-        {playerTurn === true ? (
-          <span>Player Turn</span>
-        ) : (
-          <span>Enemy Turn</span>
-        )}
-      </div>
-      <PlayerDisplay playerHealthRef={playerHealthRef} />
-      <EnemyDisplay enemyHealthRef={enemyHealthRef} />
+      <CombatLog />
+      <CardGrid
+        cards={cards}
+        setCards={setCards}
+        handleCardClick={handleCardClick}
+        cardsFlipped={cardsFlipped}
+        cardsMatched={cardsMatched}
+      />
+      <TurnCount turn={turn} playerTurn={playerTurn} />
+      <PlayerDisplay />
+      <EnemyDisplay />
     </div>
   );
 }

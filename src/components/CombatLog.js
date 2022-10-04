@@ -1,16 +1,13 @@
 import React from 'react';
+import "../css/combatlog.css";
 
-function CombatLog({cardsMatched}) {
-  let currentEffect;
- if(cardsMatched.length >= 1) {
-  currentEffect = cardsMatched[cardsMatched.length - 1].card.effect;
- }
+function CombatLog() {
+
   return (
     <div className='log-box'>
-        {currentEffect !== undefined ? <span className='combat-text'>{currentEffect}</span> : null}
+        <span className='combat-text'>Combat Log</span>
     </div>
   )
 }
-//{cards[currentEffect].cardItem.card.effect.charAt(0).toUpperCase() + cards[currentEffect].cardItem.card.effect.slice(1)}
 
 export default CombatLog

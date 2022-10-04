@@ -1,15 +1,28 @@
-import React, { useRef } from "react";
+import React from "react";
+import "../css/singlecard.css";
 
-const RenderCard = ({ card, index, cardsFlipped, cardsMatchedRef}) => {
-  const activeCardsRef = useRef([]);
-  activeCardsRef.current = cardsFlipped.map(card => card.index);
-  let cardMatchedNames = cardsMatchedRef.current.map(i => i.card.name);
+function SingleCard({ card, cardsFlipped, cardsMatched, index }) {
+  let flippedCardIndexes = [];
+  let cardsMatchedIndexes = [];
+
+  cardsFlipped.forEach((card) => {
+    flippedCardIndexes.push(card.index);
+  });
+
+  cardsMatched.forEach((card) => {
+    cardsMatchedIndexes.push(card.index);
+  });
+
   return (
-    <div className={
-     activeCardsRef.current.includes(index) || cardMatchedNames.includes(card.name) ? "card-tile" : "flip-card card-tile"
-    }>
+    <div
+      className={
+        flippedCardIndexes.includes(index) || cardsMatchedIndexes.includes(index)
+          ? "card-tile"
+          : " flip-card card-tile"
+      }
+    >
       <div className="flip-card-inner">
-      <div className="flip-card-back">
+        <div className="flip-card-back">
           <img
             className="card-img"
             src={require("../card-fronts/card-random.png")}
@@ -17,35 +30,15 @@ const RenderCard = ({ card, index, cardsFlipped, cardsMatchedRef}) => {
           />
         </div>
         <div className="flip-card-front">
-          <img className="card-img" src={card.front} alt="Avatar" />
+          <img className="card-img" src={card.card.front} alt="Avatar" />
         </div>
       </div>
     </div>
   );
-};
-
-function SingleCard({
-  handleCardClick,
-  cardsFlipped,
-  cardsMatchedRef,
-  playerTurn,
-  cards,
-}) 
-{
-  return (
-    <>
-      {cards.map((card, index) => (
-        <div className={!playerTurn || cardsFlipped.length === 2 ? "disabled-card" : ""} key={index} onClick={() => handleCardClick({card, index})}>
-          <RenderCard
-            card={card}
-            index={index}
-            cardsFlipped={cardsFlipped}
-            cardsMatchedRef={cardsMatchedRef}
-          />
-        </div>
-      ))}
-    </>
-  );
 }
 
 export default SingleCard;
+
+/*
+
+*/

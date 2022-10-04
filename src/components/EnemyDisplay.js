@@ -1,5 +1,4 @@
 import React from 'react';
-import DamageCounter from "./DamageCounter";
 
 function EnemyDisplay({enemyHealthRef}) {
   return (
@@ -10,19 +9,18 @@ function EnemyDisplay({enemyHealthRef}) {
           src={require("../enemy/drakkar-dragon.png")}
           alt=""
         />
-        <DamageCounter/>
       </div>
       <div className="enemy-name">Enemy</div>
       <div className="container progress-container">
         <div className="progress">
           <div
             className="progress-bar"
-            style={{width: `${enemyHealthRef.current * 10}%`}}
+            style={{width: 10}}
             role="progressbar"
             aria-valuenow="0"
             aria-valuemin="0"
             aria-valuemax="100"
-          >{enemyHealthRef.current}</div>
+          ></div>
         </div>
       </div>
     </div>

@@ -1,0 +1,22 @@
+.log-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: white;
+    opacity: 0.8;
+    width: 95%;
+    height: 20%;
+    border: 1rem solid burlywood;
+    border-radius: .5rem;
+  }
+  
+  .combat-text {
+    text-align: center;
+    font-size: 2rem;
+    word-wrap: normal;
+    padding: .5rem;
+  }
