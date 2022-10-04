@@ -14,13 +14,6 @@ function Moves({ turn, playerTurn }) {
           </div>
         </div>
       </div>
-      <div className="current-turn">
-        {playerTurn === true ? (
-          <span>Player Turn</span>
-        ) : (
-          <span>Enemy Turn</span>
-        )}
-      </div>
     </>
   );
 }

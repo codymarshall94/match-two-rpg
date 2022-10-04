@@ -6,7 +6,7 @@
     background-color: burlywood;
     height: 5rem;
     width: 5rem;
-    bottom: 30%;
+    bottom: 27.5%;
     left: 50%;
     transform: translateX(-50%) rotate(-90deg);
     clip-path: polygon(23% 0, 100% 0%, 100% 100%, 25% 100%, 0% 50%);
