@@ -1,15 +1,13 @@
 .card-grid-container {
-    position: absolute;
-    top: 25%;
+  position: absolute;
+  top: 25%;
 }
 
 .card-container {
-    height: 4rem;
-    width: 4rem;
-    border-radius: .5rem;
-    margin: .25rem;
-    padding: 0;
-    overflow: hidden;
+  height: 4rem;
+  width: 4rem;
+  border-radius: 0.5rem;
+  margin: 0.25rem;
+  padding: 0;
+  overflow: hidden;
 }
-
-  
